@@ -67,21 +67,21 @@ def sum_placements(scores, routine, placement, head_judge=None):
 	Parameters
 	----------
 	scores: dict
-		the scores over which we are counting
+	the scores over which we are counting
 
 	routine: hashable
-		the routine we are testing
+	the routine we are testing
 
 	placement: int
-		the placement we are testing
+	the placement we are testing
 
 	head_judge: hashable, optional
-		the head judge
+	the head judge
 
 	Returns
 	-------
 	int
-		the sum of the placements less than or equal to the placement parameter
+	the sum of the placements less than or equal to the placement parameter
 
 	'''
 	sum = 0
@@ -101,19 +101,19 @@ def count_placements(scores, routine, placement, head_judge=None):
 	Parameters
 	----------
 	scores: dict
-		the scores over which we are counting
+	the scores over which we are counting
 
 	routine: hashable
-		the routine we are testing
+	the routine we are testing
 
 	placement: int
-		the placement we are testing
+	the placement we are testing
 
 	Returns
 	-------
 	int
-		the number of times any judge gave them a placement less than or equal
-		to the placement parameter
+	the number of times any judge gave them a placement less than or equal
+	to the placement parameter
 
 	'''
 	tally = 0
@@ -131,20 +131,20 @@ def prelims(scores, head_judge, size):
 	Parameters
 	----------
 	scores: dict
-		a dictionary of {routine: placements} where placements is
-		another dictionary of {judge: placement" pairs
+	a dictionary of {routine: placements} where placements is
+	another dictionary of {judge: placement" pairs
 
 	head_judge: hashable
-		the head judge in the competition
+	the head judge in the competition
 
 	size: int
-		the number of competitors are advancing
+	the number of competitors are advancing
 
 	Returns
 	-------
 
 	dict
-		a list of top placements
+	a list of top placements
 	'''
 	num_judges = len(scores.itervalues().next())
 	placements = []
@@ -178,32 +178,32 @@ def competition(scores, head_judge, included=True):
 	Parameters
 	----------
 	scores: dictionary
-		Scores is a dictionary of routine names or numbers or ids or objects,
-		however you care to implement routines, so long as they are hashable. In
-		this implementation it is favorable to have them as either strings or ints
-		as those are more compact.
+	Scores is a dictionary of routine names or numbers or ids or objects,
+	however you care to implement routines, so long as they are hashable. In
+	this implementation it is favorable to have them as either strings or ints
+	as those are more compact.
 
 	head_judge: judge Object
-		This is a judge object and must be hashable. It is our index into the scores
-		dictionary in order to break ties later on. It is also used later in the
-		pprint method
+	This is a judge object and must be hashable. It is our index into the scores
+	dictionary in order to break ties later on. It is also used later in the
+	pprint method
 
 	include_head_judge: boolean, optional
-		This tells the program whether we need to include the head judge in the tally
-		process. This is not required, as most of the time we do include the head
-		judge's scores in the tallying process
+	This tells the program whether we need to include the head judge in the tally
+	process. This is not required, as most of the time we do include the head
+	judge's scores in the tallying process
 
 	Returns
 	-------
 	dictionary
-		this is a dictionary containing all of the information necessary to do just
-		about anything you would need to do with placements. Here are the fields
-		available right now
+	this is a dictionary containing all of the information necessary to do just
+	about anything you would need to do with placements. Here are the fields
+	available right now
 
 	placements: a dictionary of {routine: placement} pairs
-		reason: contains a dictionary allowing for one to see why a placement was set
-		head_judge: the head judge in the score
-		more to come... maybe
+	reason: contains a dictionary allowing for one to see why a placement was set
+	head_judge: the head judge in the score
+	more to come... maybe
 
 	'''
 	num_judges   = len(scores.itervalues().next())
@@ -220,13 +220,13 @@ def competition(scores, head_judge, included=True):
 		for place in range(1,num_routines+1):
 			if included:
 				reasons[routine][place] = {
-					'tally': count_placements(scores, routine, place),
-					'sum'  : sum_placements(  scores, routine, place)
+				'tally': count_placements(scores, routine, place),
+				'sum'  : sum_placements(  scores, routine, place)
 				}
-			else: 
+			else:
 				reasons[routine][place] = {
-					'tally': count_placements(scores, routine, place, head_judge),
-					'sum'  : sum_placements(  scores, routine, place, head_judge)
+				'tally': count_placements(scores, routine, place, head_judge),
+				'sum'  : sum_placements(  scores, routine, place, head_judge)
 				}
 
 	## Step 2: initial placments
@@ -246,20 +246,20 @@ def competition(scores, head_judge, included=True):
 		elif decided_placements[place]['count'] > 1:
 			ties[current_placement] = place
 		current_placement += decided_placements[place]['count']
-	
+
 	## Step 3-4: proccess ties
 	def place_ties(routines, place, count, i):
 		if len(routines) is 0: return
-		if len(routines) is 1: 
+		if len(routines) is 1:
 			placements[place] = routines[0]
-			return 
+			return
 		## TODO: fix this
 		if count >= num_routines:
 			headjudgescores = {}
 			for r in routines:
 				headjudgescore = scores[r][head_judge]
 				headjudgescores[headjudgescore] = r
-			print headjudgescores
+			print 'head judge', headjudgescores
 			for _,routine in headjudgescores.items():
 				placements[place] = routine
 				place += 1
@@ -274,18 +274,18 @@ def competition(scores, head_judge, included=True):
 			routines.remove(new_routines[0])
 			place_ties(routines, place+1, count, 'sum')
 			return
-		else: 
+		else:
 			place_ties(new_routines[:], place, count+1, 'tally')
 			for r in new_routines: routines.remove(r)
 			place_ties(routines, place+len(new_routines), count, 'sum')
 			return
-		return 
+		return
 
 	for current_placement, place in ties.items():
 		routines = decided_placements[place]['routines']
 		place_ties(routines[:], current_placement, place, 'sum')
 
-	return placements, reasons, decided_placements
+	return placements, reasons
 
 ## Alias functions to make things look nicer later on
 quarter_finals = prelims
@@ -293,41 +293,28 @@ simi_finals    = prelims
 finals         = competition
 
 if __name__ == '__main__':
-	from pprint import pprint
-
-	scores = {
-	'1': {   '1': 1, '2': 1, '3': 3, '4': 2, '5': 3},
-	'2': {   '1': 6, '2': 5, '3': 4, '4': 1, '5': 2},
-	'3': {   '1': 2, '2': 4, '3': 1, '4': 5, '5': 5},
-	'4': {   '1': 4, '2': 2, '3': 5, '4': 6, '5': 6},
-	'5': {   '1': 5, '2': 6, '3': 2, '4': 3, '5': 4},
-	'6': {   '1': 3, '2': 3, '3': 6, '4': 4, '5': 1}}
-	placements, _, _ = competition(scores, '5')
-	print 'Placements'
-	pprint(placements)
-
-	scores = {
-	'1':  {   '1': 2,  '2': 6,  '3': 6,  '4': 3,  '5': 6,  '6': 5},
-	'10': {   '1': 9,  '2': 9,  '3': 8,  '4': 10, '5': 11, '6': 10},
-	'11': {   '1': 10, '2': 7,  '3': 10, '4': 8,  '5': 10, '6': 8},
-	'2':  {   '1': 3,  '2': 1,  '3': 1,  '4': 2,  '5': 1,  '6': 1},
-	'3':  {   '1': 4,  '2': 5,  '3': 4,  '4': 11, '5': 7,  '6': 4},
-	'4':  {   '1': 11, '2': 11, '3': 7,  '4': 4,  '5': 8,  '6': 9},
-	'5':  {   '1': 5,  '2': 10, '3': 11, '4': 9,  '5': 3,  '6': 7},
-	'6':  {   '1': 6,  '2': 3,  '3': 3,  '4': 6,  '5': 5,  '6': 6},
-	'7':  {   '1': 1,  '2': 2,  '3': 2,  '4': 1,  '5': 2,  '6': 2},
-	'8':  {   '1': 7,  '2': 8,  '3': 5,  '4': 5,  '5': 4,  '6': 3},
-	'9':  {   '1': 8,  '2': 4,  '3': 9,  '4': 7,  '5': 9,  '6': 11}}
-	placements, _, _ = competition(scores, '5')
-	print 'Placements'
-	pprint(placements)
+	import pprint, argparse
+	import input_output
 	
-	test_chief_judge = {
-		1 : {1:1, 2:1, 3:1, 4:1, 5:1, 6:1, 7:1},
-		2 : {1:2, 2:3, 3:2, 4:3, 5:2, 6:3, 7:3},
-		3 : {1:3, 2:2, 3:3, 4:2, 5:3, 6:2, 7:2},
-		4 : {1:4, 2:4, 3:4, 4:4, 5:4, 6:4, 7:4}
-	}
-	placements, _, _ = competition(test_chief_judge, 7)
-	print 'Placements'
-	pprint(placements)
+	pp = pprint.PrettyPrinter(indent=4)
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--file',   nargs='?', type=argparse.FileType('r'),
+	                    help='use the given file as input')
+	parser.add_argument('--files',  nargs='*', type=argparse.FileType('r'),
+	                    help='use multiple files as input')
+	parser.add_argument('--scores', nargs='*', type=argparse.FileType('r'),
+	                    help='use multiple score files as input')
+	parser.add_argument('--output', nargs='?', type=argparse.FileType('r'),
+	                    help='output file for the program')
+	parser.add_argument('--pprint', action='store_true',
+	                    help='pretty prints the output to stdout')
+	args = parser.parse_args()
+	scores = input_output.parse_input_file(args.file)
+	placments, reasons = competition(scores, 5)
+	print 'Scores'
+	pp.pprint(scores)
+	print 'Placments'
+	pp.pprint(placments)
+	print 'Reasons'
+	pp.pprint(reasons)

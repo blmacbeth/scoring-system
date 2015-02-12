@@ -38,7 +38,7 @@ get_all_judges    = '''SELECT * FROM judges'''
 
 get_competitor_by_bib  = '''SELECT * FROM competitors WHERE bib=?'''
 get_competitor_by_name = '''SELECT * FROM competitors WHERE name=?'''
-get_all_cometitors     = '''SELECT * FROM competitors'''
+get_all_competitors    = '''SELECT * FROM competitors'''
 
 get_routine_by_id       = '''SELECT * FROM routines WHERE id=?'''
 get_routine_by_leader   = '''SELECT * FROM routines WHERE leader=?'''
@@ -109,10 +109,10 @@ class Database:
             return cur.fetchone()
         logging.debug('Falied to get competitor')
 
-    def get_all_cometitors(self):
+    def get_all_competitors(self):
         with SQL.connect(self.db) as conn:
             cur = conn.cursor()
-            cur.execute(get_all_cometitors)
+            cur.execute(get_all_competitors)
             return cur.fetchall()
         logging.debug('Falied to get competitors')
 
