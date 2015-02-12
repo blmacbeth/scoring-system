@@ -185,8 +185,8 @@ class Relative_Placements:
 		placements = len(self.places)
 		
 		strng = 'order,'
-		for j,_ in self.places[1].items():
-			strng += ' J%-2d,' % j
+		for j in self.places.iteritems().next()[1].iterkeys():
+			strng += ' J%-2s,' % j
 		
 		for i in range(placements):
 			strng += ' 1-%-2d,' % (i+1)
@@ -246,8 +246,8 @@ class Relative_Placements:
 		strng += seprt
 		strng += ' Routine Order ||'
 		
-		for j,_ in self.places[1].items():
-			strng += '  J%-2d|' % j
+		for j in self.places.iteritems().next()[1].iterkeys():
+			strng += '  J%-2s|' % j
 		
 		strng += '|'
 		
@@ -313,5 +313,5 @@ new_scores = {
 }
 
 if __name__ == '__main__':
-    placements = Relative_Placements(new_scores, 7, 3, False)
-    print placements
+    placements = Relative_Placements(new_scores, 5, 3, False)
+    placements.pprint()
