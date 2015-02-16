@@ -209,6 +209,7 @@ def competition(scores, head_judge, included=True):
 	num_judges   = len(scores.itervalues().next())
 	num_routines = len(scores)
 	majority     = (num_judges+1) / 2
+	print 'Majority', majority
 	placements   = {} # A dictionary to hold the placements
 	reasons      = {} # A dictionary to hold the reasons for each placement
 	ties         = {} # A dictionary to hold the ties we need to process
@@ -287,6 +288,7 @@ def competition(scores, head_judge, included=True):
 
 	return placements, reasons
 
+
 ## Alias functions to make things look nicer later on
 quarter_finals = prelims
 simi_finals    = prelims
@@ -294,7 +296,7 @@ finals         = competition
 
 if __name__ == '__main__':
 	import pprint, argparse
-	import input_output
+	from input_output import print_full_placements, parse_input_file, read_csv
 	
 	pp = pprint.PrettyPrinter(indent=4)
 
@@ -309,12 +311,10 @@ if __name__ == '__main__':
 	                    help='output file for the program')
 	parser.add_argument('--pprint', action='store_true',
 	                    help='pretty prints the output to stdout')
+	parser.add_argument('--csv',    nargs='*', type=argparse.FileType('r'),
+						help='read in multiple csv files')
 	args = parser.parse_args()
-	scores = input_output.parse_input_file(args.file)
-	placments, reasons = competition(scores, 5)
-	print 'Scores'
-	pp.pprint(scores)
-	print 'Placments'
-	pp.pprint(placments)
-	print 'Reasons'
-	pp.pprint(reasons)
+	scores = parse_input_file(args.file)
+	pprint.pprint(scores)
+	placements, reasons = competition(scores, '3', True)
+	print_full_placements(scores, placements, reasons)

@@ -97,7 +97,69 @@ def parse_score_file(file):
     scores = {judges[i]: int(_scores[i]) for i in range(len(judges))}
     return routine, scores
 
-def print_full_placements(placements):
-    '''
-    '''
-    pass
+def export_placements(scores, placements, reasons):
+	''' Returns a CSV of the placements
+	'''
+	pass
+
+def print_full_placements(scores, placements, reasons):
+	''' Prints the placements
+	'''
+	judges       = scores.iteritems().next()[1].keys()
+	num_routines = len(scores)
+	num_judges   = len(judges)
+	majority     = (num_judges+1)/2
+	print 'Majoirty', majority
+	
+	
+	reverse_scores = {routine: place for place, routine in placements.iteritems()}
+
+	seprt  = '------------++'
+	seprt += '-'*(num_judges  *6-1)+'++'
+	seprt += '-'*(num_routines*6-1)+'++'
+	seprt += '----------\n'
+
+	seprt2  = '------------++'
+	seprt2 += '-----+'*(num_judges)+'+'
+	seprt2 += '-----+'*(num_routines)+'+'
+	seprt2 += '----------\n'
+
+	strng  = '            ||'
+	strng += str.center('Judge Placement',   num_judges  *6-1) + '||'
+	strng += str.center('Relative Placement',num_routines*6-1) + '||\n'
+	strng += seprt
+	strng += ' Routine ID ||'
+
+	for judge in judges:
+		strng += '  J%-2s|' % judge
+	strng += '|'
+
+	for i in placements:
+		strng += ' 1-%-2d|' % i
+	strng += '|Placements\n' + seprt2
+
+	for routine, _scores in scores.items():
+		# print the routine and it's score
+		strng += '%10s  ||' % routine
+		for _, score in _scores.iteritems():
+			strng += '%3s  |' % score
+		strng += '|'
+		# print the routine's relative placement count
+		for i in range(len(reasons[routine])):
+			count = str(reasons[routine][i+1]['tally'])
+			if reasons[routine][i+1]['tally'] is 0: count = '-----'
+			elif i is 0: count = str(reasons[routine][i+1]['tally'])
+			elif reasons[routine][i+1]['tally'] > majority: count = '---->'
+			strng += str.center(str(count), 5)+'|'
+		# print the final placements
+		strng += '|%5s\n' % reverse_scores[routine] + seprt2
+	print strng
+
+def read_csv(file):
+	import csv
+	reader = csv.reader(file)
+	for row in reader:
+		print row
+
+
+
